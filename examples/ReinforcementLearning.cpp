@@ -2,7 +2,7 @@
 #include "Fido/Simulator/Simlink.h"
 
 int main() {
-  rl::FidoControlSystem learner = rl::FidoControlSystem(1, 2, {-1, -1}, {1, 1}, 3);
+  rl::FidoControlSystem learner = rl::FidoControlSystem(1, {-1, -1}, {1, 1}, 3);
   Simlink simulator;
   int goodIterations = 0;
 
@@ -11,11 +11,16 @@ int main() {
 
     double originalDistance = simulator.distanceFromLine();
 
+    std::cout << "Distance " << originalDistance << std::endl;
+
     sf::Vector2f displacement =  sf::Vector2f(action[0], action[1]);
     sf::Vector2f newPosition = simulator.robot.getPosition() + displacement;
     simulator.robot.setPosition(newPosition);
 
     double newDistance = simulator.distanceFromLine();
+
+    std::cout << "Distance " << newDistance << std::endl;
+
     double rewardValue = (fabs(originalDistance) - fabs(newDistance - originalDistance)) / sqrt(2);
     learner.applyReinforcementToLastAction(rewardValue, { simulator.isLeftOfLine() });
 
